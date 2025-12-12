@@ -240,15 +240,18 @@ git remote add upstream <url>
 
 #### 方案1：从历史中移除大文件
 ```bash
-# 使用git filter-branch（老方法）
-git filter-branch --tree-filter 'rm -f large_file.zip' HEAD
+# 使用git filter-repo（推荐，官方替代工具）
+# 安装: pip install git-filter-repo
+git filter-repo --path large_file.zip --invert-paths
 
-# 使用BFG Repo-Cleaner（推荐）
-# 1. 下载BFG: https://rtyley.github.io/bfg-repo-cleaner/
-# 2. 运行清理
+# 使用BFG Repo-Cleaner（快速简单）
+# 下载: https://rtyley.github.io/bfg-repo-cleaner/
 java -jar bfg.jar --delete-files large_file.zip
 git reflog expire --expire=now --all
 git gc --prune=now --aggressive
+
+# 使用git filter-branch（已弃用，不推荐）
+git filter-branch --tree-filter 'rm -f large_file.zip' HEAD
 ```
 
 #### 方案2：使用Git LFS
@@ -353,7 +356,16 @@ git merge temp_branch
 ```bash
 # ⚠️ 重要：如果已经推送，立即更改密码/密钥！
 
-# 从历史中移除敏感文件
+# 使用git filter-repo从历史中移除敏感文件（推荐）
+# 安装: pip install git-filter-repo
+git filter-repo --path path/to/sensitive_file --invert-paths
+
+# 或使用BFG（快速简单）
+java -jar bfg.jar --delete-files sensitive_file
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
+
+# 使用git filter-branch（已弃用，不推荐）
 git filter-branch --force --index-filter \
   "git rm --cached --ignore-unmatch path/to/sensitive_file" \
   --prune-empty --tag-name-filter cat -- --all
@@ -361,12 +373,6 @@ git filter-branch --force --index-filter \
 # 强制推送（清除远程历史）
 git push origin --force --all
 git push origin --force --tags
-
-# 更好的方法：使用BFG
-java -jar bfg.jar --delete-files sensitive_file
-git reflog expire --expire=now --all
-git gc --prune=now --aggressive
-git push origin --force --all
 ```
 
 ## 最佳实践 Best Practices

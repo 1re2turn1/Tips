@@ -89,10 +89,10 @@ def handle_missing_values(df, strategy='drop', fill_value=None,
             df_copy[col].fillna(df_copy[col].mode()[0], inplace=True)
     
     elif strategy == 'forward':
-        df_copy[columns] = df_copy[columns].fillna(method='ffill')
+        df_copy[columns] = df_copy[columns].ffill()
     
     elif strategy == 'backward':
-        df_copy[columns] = df_copy[columns].fillna(method='bfill')
+        df_copy[columns] = df_copy[columns].bfill()
     
     elif strategy == 'constant':
         df_copy[columns] = df_copy[columns].fillna(fill_value)

@@ -168,7 +168,7 @@ netstat -s
 ss -s
 ```
 
-### DNS问题
+### 刷新DNS缓存
 ```bash
 # 测试DNS解析
 nslookup google.com
@@ -176,10 +176,10 @@ dig google.com
 host google.com
 
 # 刷新DNS缓存
-# Ubuntu 18.04+
-sudo systemd-resolve --flush-caches
-# 或
+# Ubuntu 18.04+ (推荐使用resolvectl)
 sudo resolvectl flush-caches
+# 或旧命令
+sudo systemd-resolve --flush-caches
 
 # 查看DNS配置
 cat /etc/resolv.conf

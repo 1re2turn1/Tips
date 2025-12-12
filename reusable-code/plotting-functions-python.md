@@ -89,7 +89,8 @@ def plot_line_with_error(x, y_mean, y_std, label=None,
         fig, ax = plt.subplots()
     
     line = ax.plot(x, y_mean, label=label, color=color)
-    color = line[0].get_color() if color is None else color
+    if color is None:
+        color = line[0].get_color()
     
     ax.fill_between(x, y_mean - y_std, y_mean + y_std, 
                      alpha=alpha, color=color)
